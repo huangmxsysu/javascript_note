@@ -356,3 +356,24 @@ child.prototype.constructor = child
 
 这种方式的高效率体现它只调用了一次 Parent 构造函数，并且因此避免了在 Parent.prototype 上面创建不必要的、多余的属性。与此同时，原型链还能保持不变；因此，还能够正常使用 instanceof 和 isPrototypeOf。开发人员普遍认为寄生组合式继承是引用类型最理想的继承范式。
 
+## 7. 拷贝继承
+除了使用"prototype链"以外，还有另一种思路：把父对象的属性，全部拷贝给子对象，也能实现继承。
+
+```js
+function deepCopy(p, c) {
+　　　
+  var c = c || {};　　　　
+  for (var i in p) {　　　　　
+    if (typeof p[i] === 'object') {　　　　　　　　
+      c[i] = (p[i].constructor === Array) ? [] : {};　　　　　　　
+      deepCopy(p[i], c[i]);　　　　　　
+    } else {
+      c[i] = p[i]; 　　　　　　
+    }　　　　
+  }
+  　　　　
+  return c;　　
+}
+```
+深拷贝是解决了浅拷贝在引用类型出现修改子对象属性影响了父对象属性的问题。
+var Child = deepCopy(Parent);
